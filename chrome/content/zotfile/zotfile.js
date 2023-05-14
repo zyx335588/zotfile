@@ -416,6 +416,10 @@ Zotero.ZotFile = new function() {
         // create the new filename from the selected item
         if (!this.getPref('useZoteroToRename')) {
             filename = this.Wildcards.replaceWildcard(item, format);
+            // Zotero.debug("#### ZF::getFileName()-1: " + filename);
+            // 2021-05-12             
+            // 去除为了格式化而添加的HTML标签             
+            filename = filename.replace(/<.*?>/g, "");
             // Strip invalid characters (adopted from Zotero, modified to accept periods)
             filename = filename.replace(/[\/\\\?\*:|"<>]/g, '');
             // replace multiple blanks in filename with single blank & remove whitespace
@@ -439,7 +443,8 @@ Zotero.ZotFile = new function() {
         // valid zotero name
         filename = Zotero.File.getValidFileName(filename);
         // return
-        return(filename);
+        Zotero.debug("#### ZF::getFileName()-2: " + filename);
+        return (filename);
     };
 
     /**
