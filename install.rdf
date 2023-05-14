@@ -5,7 +5,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>zotfile@columbia.edu</em:id>
     <em:name>ZotFile</em:name>
-    <em:version>5.1.2.999</em:version>
+    <em:version>5.1.2.999.R6_20230514</em:version>
     <em:type>2</em:type>
     <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:creator>Joscha Legewie</em:creator>
@@ -54,6 +54,13 @@
         <em:name>ZotFile</em:name>
         <em:description> Un plugin di Zotero per gestire i tuoi allegati</em:description>
       </Description>
+    </em:localized>
+    <em:localized>
+            <Description>
+                <em:locale>zh-CN</em:locale>
+                <em:name>ZotFile</em:name>
+                <em:description>Zotero附件高级管理器</em:description>
+            </Description>
     </em:localized>
   </Description>
 </RDF>

@@ -68,6 +68,13 @@ Zotero.ZotFile.Wildcards = new function() {
             if(truncate!=-1) title = title.substr(0,truncate);
         }
 
+        // 2021-05-12             
+        // 去除标题中添加的HTML标签
+        // Zotero.debug("#### ZF::truncateTitle()-1: " + title); 
+        // removing rich text formatting            
+        title = title.replace(/<[\w\s"=\/]+>/g, "");
+        // Zotero.debug("#### ZF::truncateTitle()-2: " + title); 
+        
         // truncate if to long
         if (title.length > Zotero.ZotFile.getPref("max_titlelength")) {
             var max_titlelength=Zotero.ZotFile.getPref("max_titlelength");
@@ -133,7 +140,16 @@ Zotero.ZotFile.Wildcards = new function() {
     function formatAuthors(item) {
         // get creator and create authors string
         var itemType = Zotero.ItemTypes.getName(item.itemTypeID);
-        var creatorTypeIDs  = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
+        var creatorTypeIDs;
+        if (itemType == 'book') {
+        	creatorTypeIDs = [
+				Zotero.CreatorTypes.getID('author'),
+				Zotero.CreatorTypes.getID('editor')
+			];
+		}
+        else {
+        	creatorTypeIDs = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
+        }
         var add_etal = Zotero.ZotFile.getPref("add_etal");
         var author = "", author_lastf="", author_initials="", author_lastg = "";
         var creators = item.getCreators();
@@ -148,9 +164,15 @@ Zotero.ZotFile.Wildcards = new function() {
         var j = 0;
         for (i = 0; i < creators.length; ++i) {
             if (j < numauthors && creatorTypeIDs.indexOf(creators[i].creatorTypeID) != -1) {
-                if (author !== "") author += delimiter + creators[i].lastName;
-                if (author === "") author = creators[i].lastName;
-                var lastf =  creators[i].lastName + creators[i].firstName.substr(0, 1).toUpperCase();
+                var authorLastName = "";
+                if (creators[i].lastName && /[\u4E00-\u9FFF]/.test(creators[i].lastName)) {
+                    authorLastName = creators[i].lastName + creators[i].firstName;
+                } else if (creators[i].lastName) {
+                    authorLastName = creators[i].lastName;
+                }
+                if (author !== "") author += delimiter + authorLastName;
+                if (author === "") author = authorLastName;
+                var lastf = creators[i].lastName + creators[i].firstName.substr(0, 1).toUpperCase();
                 if (author_lastf !== "") author_lastf += delimiter + lastf;
                 if (author_lastf === "") author_lastf = lastf;
                 var initials = creators[i].firstName.substr(0, 1).toUpperCase() + creators[i].lastName.substr(0, 1).toUpperCase()
